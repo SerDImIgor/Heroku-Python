@@ -44,9 +44,16 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    msg = event.message.text
+    if msg=='Hi':
+        respnce='Hi!! How are you ?'
+    elif msg=='Can i send pic':
+        respnce='Yes!! Sure !!!'
+    else:
+        respnce='Good day sir'
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='Hi I am machine' + str(event.message.text)))
+        TextSendMessage(text=respnce))
 
 
 if __name__ == "__main__":
