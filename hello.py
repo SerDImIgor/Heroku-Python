@@ -56,8 +56,8 @@ def handle_message(event):
         event.reply_token,
         
         ImageSendMessage(
-                    original_content_url = "https://heroku-flaskn.herokuapp.com/images/cat.png",
-                    preview_image_url = "https://heroku-flaskn.herokuapp.com/images/cat.png"
+                    original_content_url = "https://heroku-flaskn.herokuapp.com/images/cat.jpg",
+                    preview_image_url = "https://heroku-flaskn.herokuapp.com/images/cat.jpg"
             )
         
         )
