@@ -4,7 +4,7 @@
 
 # https://www.youtube.com/watch?v=x8hVoalU0MA
 # https://www.youtube.com/watch?v=x8hVoalU0MA
-
+# web: gunicorn hello:app --log-file -
 from flask import Flask, request, abort
 
 from linebot import (
@@ -46,7 +46,7 @@ def callback():
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text='Hi I am machine' + str(event.message.text)))
 
 
 if __name__ == "__main__":
