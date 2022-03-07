@@ -44,10 +44,10 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    msg = event.message.text
-    if msg=='Hi':
+    msg = str(event.message.text).lower()
+    if msg=='hi':
         respnce='Hi!! How are you ?'
-    elif msg=='Can i send pic':
+    elif msg=='can i send pic':
         respnce='Yes!! Sure !!!'
     else:
         respnce='Good day sir'
