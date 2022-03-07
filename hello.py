@@ -54,10 +54,9 @@ def handle_message(event):
         respnce='Good day sir'
     line_bot_api.reply_message(
         event.reply_token,
-        
         ImageSendMessage(
-                    original_content_url = "https://heroku-flaskn.herokuapp.com/images/cat.jpg",
-                    preview_image_url = "https://heroku-flaskn.herokuapp.com/images/cat.jpg"
+                    original_content_url = 'https://heroku-flaskn.herokuapp.com/images/cat.jpg',
+                    preview_image_url = 'https://heroku-flaskn.herokuapp.com/images/catp.jpg'
             )
         
         )
