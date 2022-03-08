@@ -52,14 +52,17 @@ def handle_message(event):
         respnce='Yes!! Sure !!!'
     else:
         respnce='Good day sir'
-    line_bot_api.reply_message(
+    try:
+        line_bot_api.reply_message(
         event.reply_token,
         ImageSendMessage(
-                    original_content_url = 'https://heroku-flaskn.herokuapp.com/images/cat.jpg',
-                    preview_image_url = 'https://heroku-flaskn.herokuapp.com/images/catp.jpg'
+            original_content_url = 'https://heroku-flaskn.herokuapp.com/images/cat.jpg',
+            preview_image_url = 'https://heroku-flaskn.herokuapp.com/images/catp.jpg')
             )
-        
-        )
+    except Exception as e 
+        app.logger.error('This is an ERROR log record.'+ str(e) )
+
+
 
 
 if __name__ == "__main__":
