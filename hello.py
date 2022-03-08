@@ -46,18 +46,31 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = str(event.message.text).lower()
-    if msg=='hi':
-        respnce='Hi!! How are you ?'
-    elif msg=='can i send pic':
-        respnce='Yes!! Sure !!!'
-    else:
-        respnce='Good day sir'
+    dic={
+        'cat':{'preview':'https://i.ibb.co/Hqnjqpc/cat.jpg','original':'https://i.ibb.co/ZxW0x1Q/cat.jpg' }, 
+        'dog':{'preview':'https://i.ibb.co/PMsNChL/dog.jpg','original':'https://i.ibb.co/KDcXyqP/dog.jpg' },
+        'hipo':{'preview':'https://i.ibb.co/BVZWpj5/hipo.jpg','original':'https://i.ibb.co/DDCcJkH/hipo.jpg' },
+        'mhady':{'preview':'https://i.ibb.co/y8MFDHj/mhady.jpg','original':'https://i.ibb.co/LCqdMV7/mhady.jpg' }, 
+        'sebuc':{'preview':'https://i.ibb.co/g7Rfsgh/sebuc.jpg','original':'https://i.ibb.co/1nmPH2j/sebuc.jpg'},
+        }
+    label='cat'
+    if msg=='cat':
+        label = 'cat'
+    elif msg=='dog':
+        label='dog'
+    elif msg=='hipo':
+        label='hipo'
+    elif msg=='mhady':
+        label='mhady'
+    elif msg=='sebuc':
+        label='sebuc'
+    record = dic[label]
     try:
         line_bot_api.reply_message(
         event.reply_token,
         ImageSendMessage(
-            original_content_url = 'https://i.ibb.co/ZxW0x1Q/cat.jpg',
-            preview_image_url = 'https://i.ibb.co/Hqnjqpc/cat.jpg')
+            original_content_url = record['original'],
+            preview_image_url = record['preview'])
             )
     except Exception as e:
         app.logger.error('This is an ERROR log record.'+ str(e) )
