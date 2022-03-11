@@ -84,7 +84,7 @@ def handle_image_message(event):
     img = event.message.image
     headers = {"Authorization": "Bearer ya29.A0ARrdaM8fATAJ0BPOrLrkIcDfO-voUPnQNA42lwExCoixmSgLULRE84rITt5u_Uplnn69uQwWWbC_qyosnWHiHZJXfjyoGLgGm4JYWmo6hEUXfGzJQmdQFOUq35SVwxt8N53_fjlnnheInyFkZ9imExG59y8j"}
     para = {
-        "name": "simple.jpg",
+        "name": "simple_1.jpg",
         "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
     }
     files = {
