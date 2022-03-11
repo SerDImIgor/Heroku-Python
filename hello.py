@@ -6,6 +6,9 @@
 # https://www.youtube.com/watch?v=x8hVoalU0MA
 # web: gunicorn hello:app --log-file -
 from flask import Flask, request, abort
+import json
+import requests
+
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -75,6 +78,24 @@ def handle_message(event):
     except Exception as e:
         app.logger.error('This is an ERROR log record.'+ str(e) )
 
+
+@handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    img = event.message.image
+    headers = {"Authorization": "Bearer ya29.A0ARrdaM8fATAJ0BPOrLrkIcDfO-voUPnQNA42lwExCoixmSgLULRE84rITt5u_Uplnn69uQwWWbC_qyosnWHiHZJXfjyoGLgGm4JYWmo6hEUXfGzJQmdQFOUq35SVwxt8N53_fjlnnheInyFkZ9imExG59y8j"}
+    para = {
+        "name": "simple.jpg",
+        "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
+    }
+    files = {
+        'data': ('metadata', json.dumps(para), 'application/json; charset=UTF-8'),
+        'file': img
+    }
+    r = requests.post(
+        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        headers=headers,
+        files=files
+    )
 
 
 
