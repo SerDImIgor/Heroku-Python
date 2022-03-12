@@ -1,6 +1,7 @@
 # https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
 # Set-ExecutionPolicy Unrestricted
 # Set-ExecutionPolicy Restricted
+# https://linuxtut.com/en/25db0c9c2ecd319218df/
 
 # https://www.youtube.com/watch?v=x8hVoalU0MA
 # https://www.youtube.com/watch?v=x8hVoalU0MA
@@ -81,8 +82,8 @@ def handle_message(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
-    img = event.message
-    headers = {"Authorization": "Bearer ya29.A0ARrdaM8fATAJ0BPOrLrkIcDfO-voUPnQNA42lwExCoixmSgLULRE84rITt5u_Uplnn69uQwWWbC_qyosnWHiHZJXfjyoGLgGm4JYWmo6hEUXfGzJQmdQFOUq35SVwxt8N53_fjlnnheInyFkZ9imExG59y8j"}
+    img = event.message.content
+    headers = {"Authorization": "Bearer ya29.A0ARrdaM9LozIotoVF_XnMTZda0ZatDeZS7uCaDVGVXdK2CZpSstK6MbZl6-ZQ8j1CqJgqORtEqt0PvMyZt3lWucW4XTi9J5Q9b5BjzoMtoufWHiaeMpe4Wpk1XFN1Z26JYCbmHmoaZqrl6dWc7SdqUo1Jfcfe"}
     para = {
         "name": "simple_1.jpg",
         "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
