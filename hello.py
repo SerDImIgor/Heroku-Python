@@ -85,7 +85,7 @@ def handle_message(event):
 def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
-    headers = {"Authorization": "Bearer ya29.A0ARrdaM9LozIotoVF_XnMTZda0ZatDeZS7uCaDVGVXdK2CZpSstK6MbZl6-ZQ8j1CqJgqORtEqt0PvMyZt3lWucW4XTi9J5Q9b5BjzoMtoufWHiaeMpe4Wpk1XFN1Z26JYCbmHmoaZqrl6dWc7SdqUo1Jfcfe"}
+    headers = {"Authorization": "Bearer ya29.A0ARrdaM-Lvu7CdR_bNSWm6gSDRO5l76k9BPdBfYYc-4Y1WrO2cpI6c2pPL7ffg8QjLUP5b6GaSAUhun_Id0oJqbFtp09laXakeaIueQd-8JIl_Rq-OXtp1FOZ4e0LQAk2_1MO6qXMc9qDn5aCuRUeJ-obEv1I"}
     alfabet = np.array(['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h','I','i','J','j','K','k','L','l','M','m','N','n','O','o','P','p','Q','q','R','r','S','s','T','t','U','u','V','v','W','w','X','x','Y','y','Z','z'])
     index = np.random.randint(0,len(alfabet),15)
     name_file = ''.join(alfabet[index])
