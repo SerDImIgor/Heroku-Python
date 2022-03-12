@@ -9,6 +9,7 @@
 from flask import Flask, request, abort
 import json
 import requests
+import numpy as np
 
 
 from linebot import (
@@ -85,8 +86,11 @@ def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
     headers = {"Authorization": "Bearer ya29.A0ARrdaM9LozIotoVF_XnMTZda0ZatDeZS7uCaDVGVXdK2CZpSstK6MbZl6-ZQ8j1CqJgqORtEqt0PvMyZt3lWucW4XTi9J5Q9b5BjzoMtoufWHiaeMpe4Wpk1XFN1Z26JYCbmHmoaZqrl6dWc7SdqUo1Jfcfe"}
+    alfabet = np.array(['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h','I','i','J','j','K','k','L','l','M','m','N','n','O','o','P','p','Q','q','R','r','S','s','T','t','U','u','V','v','W','w','X','x','Y','y','Z','z'])
+    index = np.random.randint(0,len(alfabet),15)
+    name_file = ''.join(alfabet[index])
     para = {
-        "name": "simple_1.jpg",
+        "name": '{}.jpg'.format(name_file),
         "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
     }
     files = {
