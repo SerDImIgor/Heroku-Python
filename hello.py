@@ -82,7 +82,8 @@ def handle_message(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
-    img = event.message.content
+    message_content = line_bot_api.get_message_content(event.message.id)
+    img = message_content.content
     headers = {"Authorization": "Bearer ya29.A0ARrdaM9LozIotoVF_XnMTZda0ZatDeZS7uCaDVGVXdK2CZpSstK6MbZl6-ZQ8j1CqJgqORtEqt0PvMyZt3lWucW4XTi9J5Q9b5BjzoMtoufWHiaeMpe4Wpk1XFN1Z26JYCbmHmoaZqrl6dWc7SdqUo1Jfcfe"}
     para = {
         "name": "simple_1.jpg",
