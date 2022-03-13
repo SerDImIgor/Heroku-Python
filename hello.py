@@ -11,6 +11,13 @@ import json
 import requests
 import numpy as np
 
+from pydrive.auth import GoogleAuth
+from Google import Create_Service
+from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload
+import io
+
+
+
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -85,23 +92,51 @@ def handle_message(event):
 def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
-    headers = {"Authorization": "Bearer ya29.A0ARrdaM-Lvu7CdR_bNSWm6gSDRO5l76k9BPdBfYYc-4Y1WrO2cpI6c2pPL7ffg8QjLUP5b6GaSAUhun_Id0oJqbFtp09laXakeaIueQd-8JIl_Rq-OXtp1FOZ4e0LQAk2_1MO6qXMc9qDn5aCuRUeJ-obEv1I"}
     alfabet = np.array(['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h','I','i','J','j','K','k','L','l','M','m','N','n','O','o','P','p','Q','q','R','r','S','s','T','t','U','u','V','v','W','w','X','x','Y','y','Z','z'])
     index = np.random.randint(0,len(alfabet),15)
     name_file = ''.join(alfabet[index])
-    para = {
-        "name": '{}.jpg'.format(name_file),
-        "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
+
+    CLIENT_SECRET_FILE = 'client_secrets.json'
+    API_NAME = 'drive'
+    API_VERSION = 'v3'
+    SCOPES = ['https://www.googleapis.com/auth/drive']
+
+    service = Create_Service(CLIENT_SECRET_FILE,API_NAME,API_VERSION,SCOPES)
+    folder_id = '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R'
+
+    file_types = 'image/jpeg'
+    file_meta_data = {
+        'name' : name_file,
+        'parents': [folder_id]
     }
-    files = {
-        'data': ('metadata', json.dumps(para), 'application/json; charset=UTF-8'),
-        'file': img
-    }
-    r = requests.post(
-        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
-        headers=headers,
-        files=files
+
+    media = MediaIoBaseUpload(io.BytesIO(img), mimetype=file_types, resumable=True)
+    request = service.files().create(
+        media_body=media,
+        body = file_meta_data
     )
+
+    response = None
+    while response is None:
+        status, response = request.next_chunk()
+        if status:
+            app.logger.info("Uploaded %d%%." % int(status.progress() * 100))
+    app.logger.info("Upload Complete!")
+    
+    #headers = {"Authorization": "Bearer ya29.A0ARrdaM-Lvu7CdR_bNSWm6gSDRO5l76k9BPdBfYYc-4Y1WrO2cpI6c2pPL7ffg8QjLUP5b6GaSAUhun_Id0oJqbFtp09laXakeaIueQd-8JIl_Rq-OXtp1FOZ4e0LQAk2_1MO6qXMc9qDn5aCuRUeJ-obEv1I"}
+    #para = {
+    #    "name": '{}.jpg'.format(name_file),
+    #    "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
+    #}
+    #files = {
+    #    'data': ('metadata', json.dumps(para), 'application/json; charset=UTF-8'),
+    #    'file': img
+    #}
+    #r = requests.post(
+    #    "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+    #    headers=headers,
+    #    files=files
+    #)
 
 
 
