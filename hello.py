@@ -122,7 +122,6 @@ def handle_image_message(event):
         if status:
             app.logger.info("Uploaded %d%%." % int(status.progress() * 100))
     app.logger.info("Upload Complete!")
-    
     #headers = {"Authorization": "Bearer ya29.A0ARrdaM-Lvu7CdR_bNSWm6gSDRO5l76k9BPdBfYYc-4Y1WrO2cpI6c2pPL7ffg8QjLUP5b6GaSAUhun_Id0oJqbFtp09laXakeaIueQd-8JIl_Rq-OXtp1FOZ4e0LQAk2_1MO6qXMc9qDn5aCuRUeJ-obEv1I"}
     #para = {
     #    "name": '{}.jpg'.format(name_file),
