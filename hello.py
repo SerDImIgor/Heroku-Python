@@ -117,7 +117,7 @@ def handle_image_message(event):
     img = message_content.content
     db = DB(app)
     db.create_table()
-    id_file = df.insertBLOB(1,'tmp',img)
+    id_file = db.insertBLOB(1,'tmp',img)
     text_message = 'We uploaded you pic. Send me now parameters.NameShop##Coast##TypeProduct '
     text_message += str(id_file)
     try:
