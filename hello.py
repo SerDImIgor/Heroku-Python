@@ -94,7 +94,7 @@ def save_pic(user_id,folder_id,io_bytes):
 def handle_message(event):
     msg = str(event.message.text).lower()
 
-    db = DB()
+    db = DB(app)
     db.create_table()
     img = df.readBlobData(1)
     if img is not None:
@@ -115,7 +115,7 @@ def handle_message(event):
 def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
-    db = DB()
+    db = DB(app)
     db.create_table()
     id_file = df.insertBLOB(1,'tmp',img)
     text_message = 'We uploaded you pic. Send me now parameters.NameShop##Coast##TypeProduct '
