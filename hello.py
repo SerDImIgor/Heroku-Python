@@ -6,9 +6,11 @@
 # https://www.youtube.com/watch?v=x8hVoalU0MA
 # https://www.youtube.com/watch?v=x8hVoalU0MA
 # web: gunicorn hello:app --log-file -
+# http://datalytics.ru/all/rabotaem-s-api-google-drive-s-pomoschyu-python/
 from flask import Flask, request, abort
 import json
 import numpy as np
+from pathlib import Path
 
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
@@ -31,6 +33,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('Oqqf+97b4kHAW8NDNjZmtMmbJBIJ3ZRfC5JuLKyMVyd7Hjp1HB2qE0KJ+6fjP+I1mFMxSf3OqgqQ/zReW0fHio/AoCCa8El5BOS20bfZHlsvwJxaYuZxYc9pS1LnJL7OAut3Vh88zbQcmMMHhiO0qAdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('a8707fa6a9223d88af1fc2f076e75169')
 
+folders_id = {'image' : '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R','tmp':'17Le5G-ytwdyJUFmQ193ZK_QJYHJyWakI'}
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -85,27 +88,17 @@ def handle_message(event):
         app.logger.error('This is an ERROR log record.'+ str(e) )
 
 
-@handler.add(MessageEvent, message=ImageMessage)
-def handle_image_message(event):
-    message_content = line_bot_api.get_message_content(event.message.id)
-    img = message_content.content
-    alfabet = np.array(['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h','I','i','J','j','K','k','L','l','M','m','N','n','O','o','P','p','Q','q','R','r','S','s','T','t','U','u','V','v','W','w','X','x','Y','y','Z','z'])
-    index = np.random.randint(0,len(alfabet),15)
-    name_file = ''.join(alfabet[index])
-
+def save_pic(user_id,folder_id,io_bytes):
     SERVICE_ACCOUNT_FILE = 'client.json'
     API_NAME = 'drive'
     API_VERSION = 'v3'
     SCOPES = ['https://www.googleapis.com/auth/drive']
 
-    
-
     credentials = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     service = build(API_NAME,API_VERSION, credentials=credentials)
-
-
-    folder_id = '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R'
+    
+    name_file = 'tmp_{}'.format(user_id)
 
     file_types = 'image/jpeg'
     file_meta_data = {
@@ -113,9 +106,9 @@ def handle_image_message(event):
         'parents': [folder_id]
     }
 
-    media = MediaIoBaseUpload(io.BytesIO(img), mimetype=file_types, resumable=True)
+    media = MediaIoBaseUpload(io_bytes, mimetype=file_types, resumable=True)
     request = service.files().create(
-        media_body=media,
+        media_body = media,
         body = file_meta_data
     )
 
@@ -125,21 +118,30 @@ def handle_image_message(event):
         if status:
             app.logger.info("Uploaded %d%%." % int(status.progress() * 100))
     app.logger.info("Upload Complete!")
-    #headers = {"Authorization": "Bearer ya29.A0ARrdaM-Lvu7CdR_bNSWm6gSDRO5l76k9BPdBfYYc-4Y1WrO2cpI6c2pPL7ffg8QjLUP5b6GaSAUhun_Id0oJqbFtp09laXakeaIueQd-8JIl_Rq-OXtp1FOZ4e0LQAk2_1MO6qXMc9qDn5aCuRUeJ-obEv1I"}
-    #para = {
-    #    "name": '{}.jpg'.format(name_file),
-    #    "parents": ["1pwPcAW-6coZYxP2BJ8pkwcPpy2hv50aJ"]
-    #}
-    #files = {
-    #    'data': ('metadata', json.dumps(para), 'application/json; charset=UTF-8'),
-    #    'file': img
-    #}
-    #r = requests.post(
-    #    "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
-    #    headers=headers,
-    #    files=files
-    #)
 
+    results = service.files().list(pageSize=300,
+                               fields="nextPageToken, files(id, name)").execute()
+    results = results['files']
+    for dt in results:
+        if Path(dt['name']).steam==name_file:
+            return dt['id']
+    return None
+
+@handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    message_content = line_bot_api.get_message_content(event.message.id)
+    img = message_content.content
+    id_file = save_pic(1,folders_id['tmp'],io.BytesIO(img))
+    text_message = 'We uploaded you pic. Send me now parameters.NameShop##Coast##TypeProduct'
+    if id_file not None:
+        text_message += str(id_file)
+    try:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=text_message)
+            )
+    except Exception as e:
+        app.logger.error('This is an ERROR log record.'+ str(e) )
 
 
 if __name__ == "__main__":
