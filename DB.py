@@ -53,7 +53,7 @@ class DB:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info(("sqlite connection is closed")
-            return None
+        return None
 
     def insertBLOB(self,empId, name, empPhoto):
         try:

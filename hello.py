@@ -97,11 +97,15 @@ def handle_message(event):
     db = DB()
     db.create_table()
     img = df.readBlobData(1)
-    save_pic(1,folders_id['image'],img)
+    if img is not None:
+        save_pic(1,folders_id['image'],img)
+        msg = "Done!! Let's do it again"
+    else:
+        msg = "Cant find your pic!! Try again !!!"
     
     try:
         line_bot_api.reply_message(
-            event.reply_token,TextSendMessage(text="Done!! Let's do it again"))
+            event.reply_token,TextSendMessage(text=msg))
     except Exception as e:
         app.logger.error('This is an ERROR log record.'+ str(e) )
 
