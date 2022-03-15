@@ -8,15 +8,12 @@
 # web: gunicorn hello:app --log-file -
 from flask import Flask, request, abort
 import json
-import requests
 import numpy as np
 
-from pydrive.auth import GoogleAuth
-from Google import Create_Service
-from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload,MediaIoBaseDownload
 import io
-
-
 
 
 from linebot import (
@@ -96,12 +93,18 @@ def handle_image_message(event):
     index = np.random.randint(0,len(alfabet),15)
     name_file = ''.join(alfabet[index])
 
-    CLIENT_SECRET_FILE = 'client_secrets.json'
+    SERVICE_ACCOUNT_FILE = 'client.json'
     API_NAME = 'drive'
     API_VERSION = 'v3'
     SCOPES = ['https://www.googleapis.com/auth/drive']
 
-    service = Create_Service(CLIENT_SECRET_FILE,API_NAME,API_VERSION,SCOPES)
+    
+
+    credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build(API_NAME,API_VERSION, credentials=credentials)
+
+
     folder_id = '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R'
 
     file_types = 'image/jpeg'
