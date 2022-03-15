@@ -123,7 +123,7 @@ def save_pic(user_id,folder_id,io_bytes):
                                fields="nextPageToken, files(id, name)").execute()
     results = results['files']
     for dt in results:
-        if Path(dt['name']).steam==name_file:
+        if Path(dt['name']).steam()==name_file:
             return dt['id']
     return None
 
