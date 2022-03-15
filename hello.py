@@ -133,7 +133,7 @@ def handle_image_message(event):
     img = message_content.content
     id_file = save_pic(1,folders_id['tmp'],io.BytesIO(img))
     text_message = 'We uploaded you pic. Send me now parameters.NameShop##Coast##TypeProduct'
-    if id_file not None:
+    if id_file is not None:
         text_message += str(id_file)
     try:
         line_bot_api.reply_message(
