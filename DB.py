@@ -29,7 +29,7 @@ class DB:
 
     def readBlobData(self,empId):
         result_photo = None
-
+        name_file = None
         try:
             sqliteConnection = sqlite3.connect('SQLite_Python.db')
             cursor = sqliteConnection.cursor()
@@ -42,7 +42,8 @@ class DB:
                 self.app.logger.info("Id = ", row[0], "Name = ", row[1])
                 name = row[1]
                 photo = row[2]
-                result_photo = photo 
+                result_photo = photo
+                name_file = name
                 self.app.logger.info("Storing employee image and resume on disk \n")
             cursor.close()
         except sqlite3.Error as error:
@@ -52,7 +53,7 @@ class DB:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info("sqlite connection is closed")
-                return result_photo
+                return name_file
 
     def insertBLOB(self,empId, name, empPhoto):
         try:
