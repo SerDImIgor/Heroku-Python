@@ -65,10 +65,8 @@ def connect_to_google():
     service = build(API_NAME,API_VERSION, credentials=credentials)
     return service
 
-def save_pic(user_id,folder_id,io_bytes):
+def save_pic(name_file,folder_id,io_bytes):
     service = connect_to_google()
-
-    name_file = 'tmp_upload_file{}'.format(user_id)
 
     file_types = 'image/jpeg'
     file_meta_data = {
@@ -93,16 +91,17 @@ def save_pic(user_id,folder_id,io_bytes):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = str(event.message.text).lower()
-
+    val = msg.split('##')
+    name_file = '_'.join(val)
     db = DB(app)
     db.create_table()
     img = df.readBlobData(1)
     if img is not None:
-        save_pic(1,folders_id['image'],img)
+        save_pic(name_file,folders_id['image'],img)
         msg = "Done!! Let's do it again"
     else:
         msg = "Cant find your pic!! Try again !!!"
-    
+    df.deleteBLOB(1)
     try:
         line_bot_api.reply_message(
             event.reply_token,TextSendMessage(text=msg))
