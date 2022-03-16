@@ -95,7 +95,7 @@ def handle_message(event):
     name_file = '_'.join(val)
     db = DB(app)
     db.create_table()
-    img = df.readBlobData(1)
+    img = db.readBlobData(1)
     if img is not None:
         save_pic(name_file,folders_id['image'],img)
         msg = "Done!! Let's do it again"

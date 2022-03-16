@@ -7,7 +7,7 @@ class DB:
         try:
             sqliteConnection = sqlite3.connect('SQLite_Python.db')
             sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS new_employee 
-            ( id INTEGER PRIMARY KEY, name TEXT NOT NULL, photo BLOB NOT NULL);'''
+            ( id INTEGER NOT NULL, name TEXT NOT NULL, photo BLOB NOT NULL);'''
 
             cursor = sqliteConnection.cursor()
             self.app.logger.info("Successfully Connected to SQLite")
