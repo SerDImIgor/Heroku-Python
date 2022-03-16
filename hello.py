@@ -101,7 +101,7 @@ def handle_message(event):
         msg = "Done!! Let's do it again " + img
     else:
         msg = "Cant find your pic!! Try again !!!"
-    db.deleteBLOB(1)
+    #db.deleteBLOB(1)
     try:
         line_bot_api.reply_message(
             event.reply_token,TextSendMessage(text=msg))
