@@ -44,15 +44,18 @@ class DB:
                 photo = row[2]
                 result_photo = photo
                 name_file = name
+                print("Storing employee image and resume on disk \n")
                 self.app.logger.info("Storing employee image and resume on disk \n")
             cursor.close()
         except sqlite3.Error as error:
             self.app.logger.error("Failed to read blob data from sqlite table {} ".format(error))
+            print("Failed to read blob data from sqlite table {} ".format(error))
             return None
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info("sqlite connection is closed")
+                print("sqlite connection is closed OK")
                 return name_file
 
     def insertBLOB(self,empId, name, empPhoto):
