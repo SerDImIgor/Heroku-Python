@@ -1,4 +1,7 @@
 import sqlite3
+import sys 
+
+
 class DB:
     def __init__(self,app):
         self.app = app
@@ -74,16 +77,21 @@ class DB:
             self.app.logger.info("Image and file inserted successfully as a BLOB into a table")
             print("Image and file inserted successfully as a BLOB into a table")
             cursor.close()
+            return 1
         except sqlite3.Error as error:
             self.app.logger.error("Failed to insert blob data into sqlite table {}".format(error))
             print("Failed to insert blob data into sqlite table {}".format(error))
             return 0
+        except Exception as e:
+            exception_name, exception_value, _ = sys.exc_info()
+            print("Failed to insert blob data into sqlite table {} {} {}".format(exception_name,exception_value,e))
+
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info("the sqlite connection is closed")
                 print('the sqlite connection is closed')
-                return 1
+                return 0
     
     def deleteBLOB(self,empId):
         try:
