@@ -72,14 +72,17 @@ class DB:
             cursor.execute(sqlite_insert_blob_query, data_tuple)
             sqliteConnection.commit()
             self.app.logger.info("Image and file inserted successfully as a BLOB into a table")
+            print("Image and file inserted successfully as a BLOB into a table")
             cursor.close()
         except sqlite3.Error as error:
             self.app.logger.error("Failed to insert blob data into sqlite table {}".format(error))
+            print("Failed to insert blob data into sqlite table {}".format(error))
             return 0
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info("the sqlite connection is closed")
+                print('the sqlite connection is closed')
                 return 1
     
     def deleteBLOB(self,empId):
