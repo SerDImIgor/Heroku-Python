@@ -71,7 +71,8 @@ class DB:
 
 
             # Convert data into tuple format
-            data_tuple = (empId, name, io.BytesIO(empPhoto))
+            #io.BytesIO(empPhoto)
+            data_tuple = (empId, name,empPhoto)
             cursor.execute(sqlite_insert_blob_query, data_tuple)
             sqliteConnection.commit()
             self.app.logger.info("Image and file inserted successfully as a BLOB into a table")
