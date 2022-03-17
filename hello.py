@@ -97,8 +97,8 @@ def handle_message(event):
     db.create_table()
     img = db.readBlobData(1)
     if img is not None:
-        #save_pic(name_file,folders_id['image'],img)
-        msg = "Done!! Let's do it again " + img
+        save_pic(name_file,folders_id['image'],img)
+        msg = "Done!! Let's do it again "
     else:
         msg = "Cant find your pic!! Try again !!!"
     #db.deleteBLOB(1)

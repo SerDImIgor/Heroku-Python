@@ -32,7 +32,6 @@ class DB:
 
     def readBlobData(self,empId):
         result_photo = None
-        name_file = None
         try:
             sqliteConnection = sqlite3.connect('SQLite_Python.db')
             cursor = sqliteConnection.cursor()
@@ -46,7 +45,6 @@ class DB:
                 name = row[1]
                 photo = row[2]
                 result_photo = photo
-                name_file = name
                 print("Storing employee image and resume on disk \n")
                 self.app.logger.info("Storing employee image and resume on disk \n")
             cursor.close()
@@ -59,7 +57,7 @@ class DB:
                 sqliteConnection.close()
                 self.app.logger.info("sqlite connection is closed")
                 print("sqlite connection is closed OK")
-                return name_file
+        return result_photo
 
     def insertBLOB(self,empId, name, empPhoto):
         try:
@@ -78,7 +76,6 @@ class DB:
             self.app.logger.info("Image and file inserted successfully as a BLOB into a table")
             print("Image and file inserted successfully as a BLOB into a table")
             cursor.close()
-            return 1
         except sqlite3.Error as error:
             self.app.logger.error("Failed to insert blob data into sqlite table {}".format(error))
             print("Failed to insert blob data into sqlite table {}".format(error))
@@ -86,13 +83,14 @@ class DB:
         except Exception as e:
             exception_name, exception_value, _ = sys.exc_info()
             print("Failed to insert blob data into sqlite table {} {} {}".format(exception_name,exception_value,e))
+            return 0
 
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
                 self.app.logger.info("the sqlite connection is closed")
                 print('the sqlite connection is closed')
-                return 0
+        return 1
     
     def deleteBLOB(self,empId):
         try:
