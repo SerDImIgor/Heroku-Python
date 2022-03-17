@@ -1,6 +1,6 @@
 import sqlite3
 import sys 
-
+import io
 
 class DB:
     def __init__(self,app):
