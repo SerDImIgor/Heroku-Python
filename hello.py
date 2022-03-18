@@ -92,6 +92,7 @@ def save_pic(name_file,folder_id,io_bytes):
 def handle_message(event):
     msg = str(event.message.text).lower()
     db = DBT(app)
+    db.create_table()
     db.deleteBLOB(1)
     status = db.insertBLOB(1,msg)   
     if status==1:

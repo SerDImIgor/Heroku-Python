@@ -94,7 +94,6 @@ class DBT:
     def deleteBLOB(self,empId):
         try:
             sqliteConnection = sqlite3.connect('SQLite_Python.db')
-            #sqliteConnection.execute("VACUUM")
             cursor = sqliteConnection.cursor()
             print("Connected to SQLite")
             sqlite_insert_blob_query = "DELETE FROM new_employee WHERE id={};".format(empId)
