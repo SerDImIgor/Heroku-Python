@@ -16,7 +16,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload,MediaIoBaseDownload
 import io
-from DBT import DBT
+from DB import DB 
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -91,13 +91,17 @@ def save_pic(name_file,folder_id,io_bytes):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = str(event.message.text).lower()
-    db.deleteBLOB(1)
-    status = db.insertBLOB(1,msg)   
-    if status==1:
+    val = msg.split('##')
+    name_file = '_'.join(val)
+    db = DB(app)
+    db.create_table()
+    img = db.readBlobData(1)
+    if img is not None:
+        save_pic(name_file,folders_id['image'],io.BytesIO(img))
         msg = "Done!! Let's do it again "
     else:
         msg = "Cant find your pic!! Try again !!!"
-    
+    db.deleteBLOB(1)
     try:
         line_bot_api.reply_message(
             event.reply_token,TextSendMessage(text=msg))
@@ -111,18 +115,14 @@ def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
     db = DB(app)
-    name_file = db.readBlobData(1)
-    if name_file is not None:
-        msg = "Your data is uploaded"
-        v = name_file.split('##')
-        name_file = '_'.join(v)
-        save_pic(name_file,folders_id['image'],io.BytesIO(img))
-    else:
-        msg = "Cant upload your data"
+    db.create_table()
+    id_file = db.insertBLOB(1,'tmp',img)
+    text_message = 'We uploaded you pic. Send me now parameters.NameShop##Coast##TypeProduct '
+    text_message += str(id_file)
     try:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=msg)
+            TextSendMessage(text=text_message)
             )
     except Exception as e:
         app.logger.error('This is an ERROR log record.'+ str(e) )
