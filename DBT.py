@@ -64,7 +64,7 @@ class DBT:
             cursor = sqliteConnection.cursor()
             self.app.logger.info("Connected to SQLite")
             sqlite_insert_blob_query = """ INSERT INTO new_employee
-                                          (id, name) VALUES (?, ?)"""
+                                          (id, file_info) VALUES (?, ?)"""
 
 
             # Convert data into tuple format
