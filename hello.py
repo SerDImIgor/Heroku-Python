@@ -11,7 +11,7 @@ from flask import Flask, request, abort
 import json
 import numpy as np
 from pathlib import Path
-
+import datetime
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload,MediaIoBaseDownload
@@ -116,8 +116,9 @@ def handle_image_message(event):
     name_file = db.readBlobData(1)
     if name_file is not None:
         msg = "Your data is uploaded"
+        tm = str(datetime.datetime.now()).replace(' ','_').replace('.','_').replace(':',';')
         v = name_file.split('##')
-        name_file = '_'.join(v)
+        name_file = '_'.join(v) + tm
         save_pic(name_file,folders_id['image'],io.BytesIO(img))
     else:
         msg = "Cant upload your data"
