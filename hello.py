@@ -96,9 +96,9 @@ def handle_message(event):
     db.deleteBLOB(1)
     status = db.insertBLOB(1,msg)   
     if status==1:
-        msg = "Done!! Let's do it again "
+        msg = "Thanks !!! I get parameters your pic"
     else:
-        msg = "Cant find your pic!! Try again !!!"
+        msg = "Cant save parameters your pic. Try again !!"
     
     try:
         line_bot_api.reply_message(
