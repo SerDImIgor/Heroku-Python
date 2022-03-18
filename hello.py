@@ -91,6 +91,7 @@ def save_pic(name_file,folder_id,io_bytes):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = str(event.message.text).lower()
+    db = DBT(app)
     db.deleteBLOB(1)
     status = db.insertBLOB(1,msg)   
     if status==1:
@@ -110,7 +111,7 @@ def handle_message(event):
 def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
     img = message_content.content
-    db = DB(app)
+    db = DBT(app)
     name_file = db.readBlobData(1)
     if name_file is not None:
         msg = "Your data is uploaded"
