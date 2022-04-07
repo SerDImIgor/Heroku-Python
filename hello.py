@@ -15,6 +15,7 @@ import datetime
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload,MediaIoBaseUpload,MediaIoBaseDownload
+from datetime import date
 import io
 from DBT import DBT
 
@@ -33,7 +34,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('Oqqf+97b4kHAW8NDNjZmtMmbJBIJ3ZRfC5JuLKyMVyd7Hjp1HB2qE0KJ+6fjP+I1mFMxSf3OqgqQ/zReW0fHio/AoCCa8El5BOS20bfZHlsvwJxaYuZxYc9pS1LnJL7OAut3Vh88zbQcmMMHhiO0qAdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('a8707fa6a9223d88af1fc2f076e75169')
 
-folders_id = {'image' : '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R','tmp':'17Le5G-ytwdyJUFmQ193ZK_QJYHJyWakI'}
+folders_id = '1l7f3uJsihn5EpVNZI5KMjuGK19Yn6y1R'
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -65,28 +66,6 @@ def connect_to_google():
     service = build(API_NAME,API_VERSION, credentials=credentials)
     return service
 
-def save_pic(name_file,folder_id,io_bytes):
-    service = connect_to_google()
-
-    file_types = 'image/jpeg'
-    file_meta_data = {
-        'name' : name_file,
-        'parents': [folder_id]
-    }
-
-    media = MediaIoBaseUpload(io_bytes, mimetype=file_types, resumable=True)
-    request = service.files().create(
-        media_body = media,
-        body = file_meta_data
-    )
-
-    response = None
-    while response is None:
-        status, response = request.next_chunk()
-        if status:
-            app.logger.info("Uploaded %d%%." % int(status.progress() * 100))
-    app.logger.info("Upload Complete!")
-
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -108,6 +87,53 @@ def handle_message(event):
 
 
 
+def get_folder_name():
+    today = date.today()
+    folder_name = today.strftime('%d_%m_%Y')
+    return folder_name
+
+def create_folder(service,folder_id,new_folder_name):
+    # создать новую папку
+    file_metadata = {
+        'name': new_folder_name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': [folder_id]
+    }
+    file = service.files().create(body=file_metadata,fields='id').execute()
+    return file.get('id')
+
+def get_folder_id(service,folder_id):
+    query=f"parents = '{folder_id}'"
+    response = service.files().list(q=query).execute()
+    folder_today = get_folder_name()
+    for fl in response.get('files'):
+        if fl['mimeType']=='application/vnd.google-apps.folder':
+            if folder_today == fl['name']:
+                return fl['id']
+    return create_folder(service,folder_id,folder_today)
+
+def save_pic(service,name_file,folder_id,io_bytes):
+    
+    file_types = 'image/jpeg'
+    file_meta_data = {
+        'name' : name_file,
+        'parents': [folder_id]
+    }
+
+    media = MediaIoBaseUpload(io_bytes, mimetype=file_types, resumable=True)
+    request = service.files().create(
+        media_body = media,
+        body = file_meta_data
+    )
+
+    response = None
+    while response is None:
+        status, response = request.next_chunk()
+        if status:
+            app.logger.info("Uploaded %d%%." % int(status.progress() * 100))
+    app.logger.info("Upload Complete!")
+
+
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
     message_content = line_bot_api.get_message_content(event.message.id)
@@ -119,7 +145,9 @@ def handle_image_message(event):
         tm = str(datetime.datetime.now()).replace(' ','_').replace('.','_').replace(':',';')
         v = name_file.split('##')
         name_file = '_'.join(v) + tm
-        save_pic(name_file,folders_id['image'],io.BytesIO(img))
+        service = connect_to_google()
+        new_folder_id = get_folder_id(service,folders_id)
+        save_pic(service,name_file,new_folder_id,io.BytesIO(img))
     else:
         msg = "Cant upload your data"
     try:
